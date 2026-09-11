@@ -1,0 +1,1 @@
+Chronicles Of The Abyss Android wrapper. Original game.html preserved.
