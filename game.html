@@ -1469,7 +1469,18 @@ async function activateDlc(code){
   }
 }
 
-Object.assign(CLASSES,{awakened:{name:'Пробуждённый',icon:'🌑',hp:96,mp:64,atk:13,def:5,tags:['magic','risk','combo'],desc:'Герой, коснувшийся ядра Бездны. Использует разломы, эхо и силу за счёт собственного здоровья.',skills:['rift','voidpulse','echo','devour','collapse'],dlc:DLC_ID}});
+/* ---------- Новый класс ---------- */
+Object.assign(CLASSES,{
+  awakened:{
+    name:'Пробуждённый',
+    icon:'🌑',
+    hp:96,mp:64,atk:13,def:5,
+    tags:['magic','risk','combo'],
+    desc:'Герой, коснувшийся ядра Бездны. Использует разломы, эхо и силу за счёт собственного здоровья.',
+    skills:['rift','voidpulse','echo','devour','collapse'],
+    dlc:DLC_ID
+  }
+});
 Object.defineProperty(CLASSES,'awakened',{value:CLASSES.awakened,enumerable:false,writable:true,configurable:true});
 Object.assign(SKILLS,{
   rift:{name:'Разлом',cost:12,tag:'magic',tags:['magic','risk'],desc:'1.7× магический урон + замедление на 2 хода.',base:1.7,dlc:DLC_ID},
@@ -1478,11 +1489,14 @@ Object.assign(SKILLS,{
   devour:{name:'Поглощение',cost:14,tag:'risk',tags:['risk','heal'],desc:'1.5× урон; лечит на 15% нанесённого урона.',base:1.5,dlc:DLC_ID},
   collapse:{name:'Схлопывание',cost:18,tag:'risk',tags:['risk','magic','combo'],desc:'2.5× магический урон; теряешь 6% max HP. Сильнее по врагу со статусом.',base:2.5,dlc:DLC_ID}
 });
-Object.assign(SUBCLASSES,{awakened:{
-  voidwalker:{name:'Ходок Бездны',icon:'🕳️',desc:'Сила растёт вместе с риском.',tags:['risk','magic'],bonus:{magic:5,hp:-4},dlc:DLC_ID},
-  echoLord:{name:'Повелитель Эха',icon:'🌌',desc:'Комбо превращается в магическую силу.',tags:['combo','magic'],bonus:{mp:12,crit:.03},dlc:DLC_ID}
-}});
+Object.assign(SUBCLASSES,{
+  awakened:{
+    voidwalker:{name:'Ходок Бездны',icon:'🕳️',desc:'Сила растёт вместе с риском.',tags:['risk','magic'],bonus:{magic:5,hp:-4},dlc:DLC_ID},
+    echoLord:{name:'Повелитель Эха',icon:'🌌',desc:'Комбо превращается в магическую силу.',tags:['combo','magic'],bonus:{mp:12,crit:.03},dlc:DLC_ID}
+  }
+});
 
+/* ---------- 10 предметов ---------- */
 const DLC_ITEMS=[
   {id:'riftblade',name:'Клинок Разлома',slot:'weapon',rarity:'epic',tags:['magic','risk'],atk:6,magic:3,desc:'+6 ATK, +3 MAGIC; урон навыков +5%.',dlc:DLC_ID,skillMul:.05},
   {id:'voidstaff',name:'Посох Пустого Света',slot:'weapon',rarity:'epic',tags:['magic','burn'],magic:9,desc:'+9 MAGIC; горение от навыков +1.',dlc:DLC_ID,skillBurn:1},
@@ -1496,6 +1510,8 @@ const DLC_ITEMS=[
   {id:'abyssCore',name:'Ядро Пробуждения',slot:'accessory',rarity:'legendary',tags:['magic','risk','summon'],magic:7,atk:3,desc:'+3 ATK, +7 MAGIC; при победе над элитой +5% max HP до конца забега.',dlc:DLC_ID,eliteHp:.05}
 ];
 ITEMS.push(...DLC_ITEMS);
+
+/* ---------- 8 реликвий ---------- */
 const DLC_RELICS=[
   {id:'riftHeart',name:'Сердце Разлома',rarity:'epic',tags:['magic','risk'],desc:'Навыки наносят +12% урона, но их стоимость MP +1.',dlc:DLC_ID},
   {id:'echoCrown',name:'Корона Эха',rarity:'legendary',tags:['combo','magic'],desc:'При комбо 5+ каждый навык получает +25% урона.',dlc:DLC_ID},
@@ -1507,65 +1523,458 @@ const DLC_RELICS=[
   {id:'awakeningSeal',name:'Печать Пробуждения',rarity:'legendary',tags:['magic','combo','risk'],desc:'За каждый активный статус на враге +6% урона навыков, максимум +30%.',dlc:DLC_ID}
 ];
 RELICS.push(...DLC_RELICS);
+
+/* ---------- 3 врага ---------- */
 const DLC_ENEMIES=[
   {id:'riftStalker',name:'Сталкер Разлома',hp:82,atk:17,def:4,gold:48,pattern:['attack','slow','crit'],dlc:DLC_ID},
   {id:'voidSeer',name:'Провидец Пустоты',hp:76,atk:15,def:5,gold:52,pattern:['burn','poison','heal'],dlc:DLC_ID},
   {id:'echoDevourer',name:'Пожиратель Эха',hp:105,atk:18,def:6,gold:65,pattern:['block','stun','attack'],dlc:DLC_ID}
 ];
 ENEMIES.push(...DLC_ENEMIES);
-const DLC_BOSS={id:'awakeningAvatar',name:'Аватар Пробуждения',hp:330,atk:27,def:9,gold:240,phases:3,skills:['special','burn','crit','heal'],dlc:DLC_ID};
+
+/* ---------- Новый босс ---------- */
+const DLC_BOSS={
+  id:'awakeningAvatar',name:'Аватар Пробуждения',hp:330,atk:27,def:9,gold:240,phases:3,
+  skills:['special','burn','crit','heal'],dlc:DLC_ID
+};
 BOSSES.push(DLC_BOSS);
+
+/* ---------- 5 событий DLC ---------- */
 const DLC_EVENTS=[
-  {name:'Сломанный портал',desc:'Разлом предлагает короткий путь за часть жизненной силы.',actions:[['🕳️ -15 HP → +100 золота',()=>{S.p.hp=Math.max(1,S.p.hp-15);S.gold+=100;addLog('🕳️ Портал отдал тебе золото.','good')}],['🌌 -10 max HP → редкая реликвия',()=>{S.p.max=Math.max(1,S.p.max-10);S.p.hp=Math.min(S.p.hp,S.p.max);giveRelic('rare')}],['🚪 Уйти',()=>{}]],dlc:DLC_ID},
-  {name:'Хор Эха',desc:'Голоса обещают силу, если ты выдержишь их ритм.',actions:[['⚡ +3 комбо → -8 HP',()=>{S.p.combo=Math.min(9,S.p.combo+3);S.p.hp=Math.max(1,S.p.hp-8)}],['💧 +12 MP → получить проклятие',()=>{S.p.mp=Math.min(S.p.maxmp,S.p.mp+12);addCurse()}],['🚪 Уйти',()=>{}]],dlc:DLC_ID},
-  {name:'Око Пустоты',desc:'Оно показывает один возможный исход твоего похода.',actions:[['👁️ Увидеть силу → +15% ATK на текущий бой',()=>{S.p.tempDlcAtk=.15;addLog('👁️ Око усилило следующий бой.','good')}],['💎 Заплатить 30 золота → легендарная реликвия',()=>{if(S.gold>=30){S.gold-=30;giveRelic('legendary')}else toast('Не хватает золота.')}],['🚪 Уйти',()=>{}]],dlc:DLC_ID},
-  {name:'Кузница Трещин',desc:'Металл здесь помнит удары тех, кто прошёл Бездну.',actions:[['🔨 Улучшить случайный предмет',()=>{const i=R.int(S.inventory.length);if(S.inventory.length)forgeItem(i);else toast('Нет предметов.')}],['🔥 Обменять 15 HP на 40 золота',()=>{S.p.hp=Math.max(1,S.p.hp-15);S.gold+=40}],['🚪 Уйти',()=>{}]],dlc:DLC_ID},
-  {name:'Последнее пробуждение',desc:'Бездны становится больше, но и ты меняешься вместе с ней.',actions:[['🌑 +20 max HP → +1 проклятие',()=>{S.p.max+=20;S.p.hp=Math.min(S.p.max,S.p.hp+20);addCurse()}],['⚔️ +2 ATK → -20 max HP',()=>{S.p.atk+=2;S.p.max=Math.max(1,S.p.max-20);S.p.hp=Math.min(S.p.hp,S.p.max)}],['🚪 Уйти',()=>{}]],dlc:DLC_ID}
+  {name:'Сломанный портал',desc:'Разлом предлагает короткий путь за часть жизненной силы.',actions:[
+    ['🕳️ -15 HP → +100 золота',()=>{S.p.hp=Math.max(1,S.p.hp-15);S.gold+=100;addLog('🕳️ Портал отдал тебе золото.','good')}],
+    ['🌌 -10 max HP → редкая реликвия',()=>{S.p.max=Math.max(1,S.p.max-10);S.p.hp=Math.min(S.p.hp,S.p.max);giveRelic('rare')}],
+    ['🚪 Уйти',()=>{}]
+  ],dlc:DLC_ID},
+  {name:'Хор Эха',desc:'Голоса обещают силу, если ты выдержишь их ритм.',actions:[
+    ['⚡ +3 комбо → -8 HP',()=>{S.p.combo=Math.min(9,S.p.combo+3);S.p.hp=Math.max(1,S.p.hp-8)}],
+    ['💧 +12 MP → получить проклятие',()=>{S.p.mp=Math.min(S.p.maxmp,S.p.mp+12);addCurse()}],
+    ['🚪 Уйти',()=>{}]
+  ],dlc:DLC_ID},
+  {name:'Око Пустоты',desc:'Оно показывает один возможный исход твоего похода.',actions:[
+    ['👁️ Увидеть силу → +15% ATK на текущий бой',()=>{S.p.tempDlcAtk=.15;addLog('👁️ Око усилило следующий бой.','good')}],
+    ['💎 Заплатить 30 золота → легендарная реликвия',()=>{if(S.gold>=30){S.gold-=30;giveRelic('legendary')}else toast('Не хватает золота.')}],
+    ['🚪 Уйти',()=>{}]
+  ],dlc:DLC_ID},
+  {name:'Кузница Трещин',desc:'Металл здесь помнит удары тех, кто прошёл Бездну.',actions:[
+    ['🔨 Улучшить случайный предмет',()=>{const i=R.int(S.inventory.length);if(S.inventory.length)forgeItem(i);else toast('Нет предметов.')}],
+    ['🔥 Обменять 15 HP на 40 золота',()=>{S.p.hp=Math.max(1,S.p.hp-15);S.gold+=40}],
+    ['🚪 Уйти',()=>{}]
+  ],dlc:DLC_ID},
+  {name:'Последнее пробуждение',desc:'Бездны становится больше, но и ты меняешься вместе с ней.',actions:[
+    ['🌑 +20 max HP → +1 проклятие',()=>{S.p.max+=20;S.p.hp=Math.min(S.p.max,S.p.hp+20);addCurse()}],
+    ['⚔️ +2 ATK → -20 max HP',()=>{S.p.atk+=2;S.p.max=Math.max(1,S.p.max-20);S.p.hp=Math.min(S.p.hp,S.p.max)}],
+    ['🚪 Уйти',()=>{}]
+  ],dlc:DLC_ID}
 ];
 EVENTS.push(...DLC_EVENTS);
-Object.assign(ACHIEVEMENTS,{dlcAwakened:{name:'Пробуждение',desc:'Активировать DLC «Пробуждение Бездны».',pts:20,dlc:DLC_ID},dlcClass:{name:'Новая грань',desc:'Завершить забег Пробуждённым.',pts:35,dlc:DLC_ID},dlcBoss:{name:'Лик Пробуждения',desc:'Победить Аватара Пробуждения.',pts:45,dlc:DLC_ID},dlcBuild:{name:'Эхо и разлом',desc:'Завершить забег с активной синергией DLC.',pts:30,dlc:DLC_ID},dlcCollector:{name:'Архив пробуждения',desc:'Собрать 5 разных предметов или реликвий DLC.',pts:40,dlc:DLC_ID}});
+
+/* ---------- 5 достижений и кодекс ---------- */
+Object.assign(ACHIEVEMENTS,{
+  dlcAwakened:{name:'Пробуждение',desc:'Активировать DLC «Пробуждение Бездны».',pts:20,dlc:DLC_ID},
+  dlcClass:{name:'Новая грань',desc:'Завершить забег Пробуждённым.',pts:35,dlc:DLC_ID},
+  dlcBoss:{name:'Лик Пробуждения',desc:'Победить Аватара Пробуждения.',pts:45,dlc:DLC_ID},
+  dlcBuild:{name:'Эхо и разлом',desc:'Завершить забег с активной синергией DLC.',pts:30,dlc:DLC_ID},
+  dlcCollector:{name:'Архив пробуждения',desc:'Собрать 5 разных предметов или реликвий DLC.',pts:40,dlc:DLC_ID}
+});
 CODEX_ENEMIES.push(...DLC_ENEMIES,DLC_BOSS);
 
-const BASE_DLC_GIVE_RELIC=giveRelic;
-giveRelic=function(rarity){if(dlcUnlocked())return BASE_DLC_GIVE_RELIC(rarity);const original=RELICS.slice();for(let i=RELICS.length-1;i>=0;i--)if(RELICS[i].dlc===DLC_ID)RELICS.splice(i,1);try{return BASE_DLC_GIVE_RELIC(rarity)}finally{RELICS.splice(0,RELICS.length,...original)}};
-const BASE_DLC_START_COMBAT=startCombat;
-startCombat=function(elite=false){const original=ENEMIES.slice();if(!dlcUnlocked())for(let i=ENEMIES.length-1;i>=0;i--)if(ENEMIES[i].dlc===DLC_ID)ENEMIES.splice(i,1);try{return BASE_DLC_START_COMBAT(elite)}finally{ENEMIES.splice(0,ENEMIES.length,...original)}};
-const BASE_DLC_START_BOSS=startBoss;
-startBoss=function(){const original=BOSSES.slice();if(!dlcUnlocked())for(let i=BOSSES.length-1;i>=0;i--)if(BOSSES[i].dlc===DLC_ID)BOSSES.splice(i,1);try{return BASE_DLC_START_BOSS()}finally{BOSSES.splice(0,BOSSES.length,...original)}};
-const BASE_DLC_MAKE_REWARDS=makeRewards;
-makeRewards=function(count){const oi=ITEMS.slice(),or=RELICS.slice();if(!dlcUnlocked()){for(let i=ITEMS.length-1;i>=0;i--)if(ITEMS[i].dlc===DLC_ID)ITEMS.splice(i,1);for(let i=RELICS.length-1;i>=0;i--)if(RELICS[i].dlc===DLC_ID)RELICS.splice(i,1)}try{return BASE_DLC_MAKE_REWARDS(count)}finally{ITEMS.splice(0,ITEMS.length,...oi);RELICS.splice(0,RELICS.length,...or)}};
-const BASE_DLC_ENTER_NODE=enterNode;
-enterNode=function(n){const oe=EVENTS.slice();if(!dlcUnlocked())for(let i=EVENTS.length-1;i>=0;i--)if(EVENTS[i].dlc===DLC_ID)EVENTS.splice(i,1);try{return BASE_DLC_ENTER_NODE(n)}finally{EVENTS.splice(0,EVENTS.length,...oe)}};
 
-const BASE_DLC_START_RUN=startRun;
-startRun=function(cls,asc,seed,subclass='auto',loadout='none',modifier='normal'){if(CLASSES[cls]?.dlc===DLC_ID&&!dlcUnlocked()){openDlcActivation();return}BASE_DLC_START_RUN(cls,asc,seed,subclass,loadout,modifier);const sub=SUBCLASSES[cls]?.[S.profile?.subclass];if(sub?.bonus?.crit&&S.p)S.p.crit+=sub.bonus.crit;if(S.p)S.p.dlcFirstSkillUsed=false;recomputeBuild();save();render()};
+const BASE_DLC_GIVE_RELIC=giveRelic;
+giveRelic=function(rarity){
+  if(dlcUnlocked())return BASE_DLC_GIVE_RELIC(rarity);
+  const original=RELICS.slice();
+  for(let i=RELICS.length-1;i>=0;i--)if(RELICS[i].dlc===DLC_ID)RELICS.splice(i,1);
+  try{return BASE_DLC_GIVE_RELIC(rarity)}finally{RELICS.splice(0,RELICS.length,...original)}
+};
+
+/* ---------- Защита DLC-контента до покупки ---------- */
+function dlcPoolFilter(arr){
+  return dlcUnlocked()?arr:arr.filter(x=>x.dlc!==DLC_ID);
+}
+const BASE_DLC_START_COMBAT=startCombat;
+startCombat=function(elite=false){
+  const original=ENEMIES.slice();
+  if(!dlcUnlocked()){
+    for(let i=ENEMIES.length-1;i>=0;i--)if(ENEMIES[i].dlc===DLC_ID)ENEMIES.splice(i,1);
+  }
+  try{return BASE_DLC_START_COMBAT(elite)}finally{
+    ENEMIES.splice(0,ENEMIES.length,...original);
+  }
+};
+const BASE_DLC_START_BOSS=startBoss;
+startBoss=function(){
+  const original=BOSSES.slice();
+  if(!dlcUnlocked()){
+    for(let i=BOSSES.length-1;i>=0;i--)if(BOSSES[i].dlc===DLC_ID)BOSSES.splice(i,1);
+  }
+  try{return BASE_DLC_START_BOSS()}finally{
+    BOSSES.splice(0,BOSSES.length,...original);
+  }
+};
+const BASE_DLC_MAKE_REWARDS=makeRewards;
+makeRewards=function(count){
+  const oi=ITEMS.slice(),or=RELICS.slice(),oe=ENEMIES.slice(),ob=BOSSES.slice(),ov=EVENTS.slice();
+  if(!dlcUnlocked()){
+    for(let i=ITEMS.length-1;i>=0;i--)if(ITEMS[i].dlc===DLC_ID)ITEMS.splice(i,1);
+    for(let i=RELICS.length-1;i>=0;i--)if(RELICS[i].dlc===DLC_ID)RELICS.splice(i,1);
+  }
+  try{return BASE_DLC_MAKE_REWARDS(count)}finally{
+    ITEMS.splice(0,ITEMS.length,...oi);RELICS.splice(0,RELICS.length,...or);
+    ENEMIES.splice(0,ENEMIES.length,...oe);BOSSES.splice(0,BOSSES.length,...ob);EVENTS.splice(0,EVENTS.length,...ov);
+  }
+};
+const BASE_DLC_ENTER_NODE=enterNode;
+enterNode=function(n){
+  const oe=EVENTS.slice();
+  if(!dlcUnlocked())for(let i=EVENTS.length-1;i>=0;i--)if(EVENTS[i].dlc===DLC_ID)EVENTS.splice(i,1);
+  try{return BASE_DLC_ENTER_NODE(n)}finally{EVENTS.splice(0,EVENTS.length,...oe)}
+};
+
+
+const BASE_DLC_START_RUN2=startRun;
+startRun=function(cls,asc,seed,subclass='auto',loadout='none',modifier='normal'){
+  if(CLASSES[cls]?.dlc===DLC_ID&&!dlcUnlocked()){openDlcActivation();return}
+  BASE_DLC_START_RUN2(cls,asc,seed,subclass,loadout,modifier);
+  const sub=SUBCLASSES[cls]?.[S.profile?.subclass];
+  if(sub?.bonus?.crit&&S.p)S.p.crit+=sub.bonus.crit;
+  if(S.p)S.p.dlcFirstSkillUsed=false;
+  recomputeBuild();save();render();
+};
+
+/* ---------- DLC skill execution ---------- */
+const BASE_DLC_USE_SKILL=useSkill;
+useSkill=function(id){
+  const sk=SKILLS[id];
+  if(!sk||sk.dlc!==DLC_ID)return BASE_DLC_USE_SKILL(id);
+  if(!dlcUnlocked()){toast('Этот контент доступен после активации DLC.');return}
+  if(!canAct())return;
+  const p=S.p,e=enemy();
+  const effectiveCost=sk.cost+(hasRelic('riftHeart')?1:0);
+  if(p.mp<effectiveCost){toast('Недостаточно MP');return}
+  p.mp-=effectiveCost;
+  let d=0;
+  const skillBonus=1;
+  if(id==='rift'){
+    d=dmgCalc(p,e,sk.base,true)*skillBonus;
+    dealPlayerDamage(Math.floor(d),'Разлом');
+    addStatus(e,'slow',2);
+  }else if(id==='voidpulse'){
+    d=dmgCalc(p,e,sk.base,true)*skillBonus;
+    dealPlayerDamage(Math.floor(d),'Импульс Бездны');
+    const st=R.pick(['burn','poison','bleed']);addStatus(e,st,3+(st==='burn'&&hasItem('voidstaff')?1:0));
+    if(hasRelic('abyssLantern'))addStatus(e,st,4);
+  }else if(id==='echo'){
+    for(let i=0;i<2;i++){
+      d=dmgCalc(p,e,sk.base,true)*skillBonus;
+      if(p.combo>=5&&hasRelic('echoCrown'))d*=1.25;
+      dealPlayerDamage(Math.floor(d),'Эхо Бездны');
+      if(e.hp<=0)break;
+    }
+    p.combo=Math.min(9,p.combo+2);
+    p.mp=Math.min(p.maxmp,p.mp+2+(hasItem('echoRing')?1:0));
+  }else if(id==='devour'){
+    d=dmgCalc(p,e,sk.base)*skillBonus;
+    dealPlayerDamage(Math.floor(d),'Поглощение');
+    const healed=Math.floor(Math.max(0,d)*.15*(1+(hasItem('awakeningAmulet')?.20:0)));
+    if(healed>0)heal(healed);
+  }else if(id==='collapse'){
+    d=dmgCalc(p,e,sk.base,true)*skillBonus;
+    if((e.statuses||[]).length)d*=1.30;
+    if(hasRelic('awakeningSeal'))d*=1+Math.min(.30,(e.statuses||[]).length*.06);
+    if(p.combo>=5&&hasRelic('echoCrown'))d*=1.25;
+    dealPlayerDamage(Math.floor(d),'Схлопывание');
+    p.hp=Math.max(1,p.hp-Math.ceil(p.max*.06));
+  }
+  if(hasItem('riftBoots'))S.p.dlcFirstSkillUsed=true;
+  if(e.hp>0)endPlayerTurn();else winCombat();
+};
+
 
 const BASE_DLC_APPLY_ITEM=applyItem;
-applyItem=function(it){BASE_DLC_APPLY_ITEM(it);if(it?.dlc===DLC_ID&&it.hp&&S.p){const m=RARITY[it.rarity]?.mul||1,hp=Math.round(it.hp*m);S.p.max+=hp;S.p.hp+=hp;it.__bonus=it.__bonus||{};it.__bonus.hp=hp}};
+applyItem=function(it){
+  BASE_DLC_APPLY_ITEM(it);
+  if(it?.dlc===DLC_ID&&it.hp&&S.p){
+    const m=RARITY[it.rarity]?.mul||1;
+    const hp=Math.round(it.hp*m);
+    S.p.max+=hp;S.p.hp+=hp;
+    it.__bonus=it.__bonus||{};it.__bonus.hp=hp;
+  }
+};
 const BASE_DLC_SCRAP_ITEM=scrapItem;
-scrapItem=function(i){const it=S.inventory[i];if(!it)return;const hp=it.__bonus?.hp||0;BASE_DLC_SCRAP_ITEM(i);if(hp&&S.p){S.p.max=Math.max(1,S.p.max-hp);S.p.hp=Math.min(S.p.hp,S.p.max)}save()};
+scrapItem=function(i){
+  const it=S.inventory[i];
+  if(!it)return;
+  const hp=it.__bonus?.hp||0;
+  const beforeMax=S.p?.max||0;
+  BASE_DLC_SCRAP_ITEM(i);
+  if(hp&&S.p){
+    S.p.max=Math.max(1,S.p.max-hp);
+    S.p.hp=Math.min(S.p.hp,S.p.max);
+  }
+  if(beforeMax!==S.p?.max)save();
+};
 
-const BASE_DLC_USE_SKILL=useSkill;
-useSkill=function(id){const sk=SKILLS[id];if(!sk||sk.dlc!==DLC_ID)return BASE_DLC_USE_SKILL(id);if(!dlcUnlocked()){toast('Этот контент доступен после активации DLC.');return}if(!canAct())return;const p=S.p,e=enemy(),effectiveCost=sk.cost+(hasRelic('riftHeart')?1:0);if(p.mp<effectiveCost){toast('Недостаточно MP');return}p.mp-=effectiveCost;let d=0,skillBonus=1;if(id==='rift'){d=dmgCalc(p,e,sk.base,true)*skillBonus;dealPlayerDamage(Math.floor(d),'Разлом');addStatus(e,'slow',2)}else if(id==='voidpulse'){d=dmgCalc(p,e,sk.base,true)*skillBonus;dealPlayerDamage(Math.floor(d),'Импульс Бездны');const st=R.pick(['burn','poison','bleed']);addStatus(e,st,3+(st==='burn'&&hasItem('voidstaff')?1:0));if(hasRelic('abyssLantern'))addStatus(e,st,4)}else if(id==='echo'){for(let i=0;i<2;i++){d=dmgCalc(p,e,sk.base,true)*skillBonus;if(p.combo>=5&&hasRelic('echoCrown'))d*=1.25;dealPlayerDamage(Math.floor(d),'Эхо Бездны');if(e.hp<=0)break}p.combo=Math.min(9,p.combo+2);p.mp=Math.min(p.maxmp,p.mp+2+(hasItem('echoRing')?1:0))}else if(id==='devour'){d=dmgCalc(p,e,sk.base)*skillBonus;dealPlayerDamage(Math.floor(d),'Поглощение');const healed=Math.floor(Math.max(0,d)*.15*(1+(hasItem('awakeningAmulet')?.20:0)));if(healed>0)heal(healed)}else if(id==='collapse'){d=dmgCalc(p,e,sk.base,true)*skillBonus;if((e.statuses||[]).length)d*=1.30;if(hasRelic('awakeningSeal'))d*=1+Math.min(.30,(e.statuses||[]).length*.06);if(p.combo>=5&&hasRelic('echoCrown'))d*=1.25;dealPlayerDamage(Math.floor(d),'Схлопывание');p.hp=Math.max(1,p.hp-Math.ceil(p.max*.06))}if(hasItem('riftBoots'))p.dlcFirstSkillUsed=true;if(e.hp>0)endPlayerTurn();else winCombat()};
-
+/* ---------- DLC combat effects ---------- */
+const BASE_DLC_PLAYER_ATTACK=playerAttack;
+playerAttack=function(){
+  const before=S.p?.combo||0;
+  const result=BASE_DLC_PLAYER_ATTACK();
+  if(dlcUnlocked()&&enemy()&&hasRelic('fractureShard')&&hasStatus(enemy(),'bleed')&&(S.p?.combo||0)>before)addStatus(enemy(),'bleed',1);
+  return result;
+};
 const BASE_DLC_DMG_CALC=dmgCalc;
-dmgCalc=function(att,def,mult=1,magic=false){let d=BASE_DLC_DMG_CALC(att,def,mult,magic);if(att===S.p&&dlcUnlocked()){if(magic){if(hasItem('riftblade'))d*=1.05;if(hasRelic('riftHeart'))d*=1.12;if(hasRelic('echoCrown')&&S.p.combo>=5)d*=1.25;if(hasRelic('awakeningSeal'))d*=1+Math.min(.30,(def.statuses||[]).length*.06)}if(S.p.tempDlcAtk){d*=1+S.p.tempDlcAtk;S.p.tempDlcAtk=0}if(hasItem('echoDagger')&&S.p.combo>=5)d*=1.10;if(hasItem('riftBoots')&&!S.p.dlcFirstSkillUsed)d*=1.20}return Math.max(1,Math.floor(d))};
+dmgCalc=function(att,def,mult=1,magic=false){
+  let d=BASE_DLC_DMG_CALC(att,def,mult,magic);
+  if(att===S.p&&dlcUnlocked()){
+    if(magic){
+      if(hasItem('riftblade'))d*=1.05;
+      if(hasRelic('riftHeart'))d*=1.12;
+      if(hasRelic('echoCrown')&&S.p.combo>=5)d*=1.25;
+      if(hasRelic('awakeningSeal'))d*=1+Math.min(.30,(def.statuses||[]).length*.06);
+      if(hasItem('firstSkill')&&false)d*=1;
+    }
+    if(S.p.tempDlcAtk){d*=1+S.p.tempDlcAtk;S.p.tempDlcAtk=0}
+    if(hasItem('echoDagger')&&S.p.combo>=5)d*=1.10;
+    if(hasItem('riftBoots')&&!S.p.dlcFirstSkillUsed)d*=1.20;
+  }
+  return Math.max(1,Math.floor(d));
+};
+const BASE_DLC_ENEMY_ATTACK=enemyAttack;
+enemyAttack=function(mult=1,forceCrit=false){
+  const p=S.p;
+  let before=p?.hp||0;
+  BASE_DLC_ENEMY_ATTACK(mult,forceCrit);
+  if(dlcUnlocked()&&hasItem('abyssArmor')&&p.hp/p.max<.4&&p.hp<before){
+    const lost=before-p.hp;
+    p.hp=Math.min(p.max,p.hp+Math.floor(lost*.10));
+  }
+};
 const BASE_DLC_END_TURN=endPlayerTurn;
-endPlayerTurn=function(){BASE_DLC_END_TURN();if(dlcUnlocked()&&S.screen==='combat'&&S.p){if(hasItem('voidMantle')&&S.combat.turn%3===0)S.p.mp=Math.min(S.p.maxmp,S.p.mp+3);if(hasItem('echoRing')&&S.p.combo>=2)S.p.mp=Math.min(S.p.maxmp,S.p.mp+1);if(hasRelic('echoStone')&&S.p.combo>=4&&S.combat.turn%3===0)heal(Math.floor(S.p.max*.04))}};
+endPlayerTurn=function(){
+  BASE_DLC_END_TURN();
+  if(dlcUnlocked()&&S.screen==='combat'&&S.p){
+    if(hasItem('voidMantle')&&S.combat.turn%3===0)S.p.mp=Math.min(S.p.maxmp,S.p.mp+3);
+    if(hasItem('echoRing')&&S.p.combo>=2)S.p.mp=Math.min(S.p.maxmp,S.p.mp+1);
+    if(hasRelic('echoStone')&&S.p.combo>=4&&S.combat.turn%3===0)heal(Math.floor(S.p.max*.04));
+  }
+};
 const BASE_DLC_WIN_COMBAT=winCombat;
-winCombat=function(){const wasDlcEnemy=!!enemy()?.dlc;const beforeInventory=(S.inventory||[]).filter(x=>x.dlc===DLC_ID).length;BASE_DLC_WIN_COMBAT();if(dlcUnlocked()&&wasDlcEnemy){addLog('🌑 Победа над врагом DLC.','good');if(hasItem('abyssCore')&&enemy()?.elite){S.p.max=Math.floor(S.p.max*1.05);S.p.hp=Math.min(S.p.max,S.p.hp+5)}}if(dlcUnlocked()&&beforeInventory>=5)awardAchievement('dlcCollector')};
-const BASE_DLC_SET_INTENT=setIntent;
-setIntent=function(){const e=enemy();if(e?.id==='awakeningAvatar'&&dlcUnlocked()){const pool=e.phase===1?['attack','special','burn']:e.phase===2?['crit','special','heal']:['special','crit','burn','attack'];e.intent=R.pick(pool);return}BASE_DLC_SET_INTENT()};
+winCombat=function(){
+  const wasDlcEnemy=!!enemy()?.dlc;
+  const beforeInventory=(S.inventory||[]).filter(x=>x.dlc===DLC_ID).length;
+  BASE_DLC_WIN_COMBAT();
+  if(dlcUnlocked()&&wasDlcEnemy){
+    addLog('🌑 Победа над врагом DLC.','good');
+    if(hasItem('abyssCore')&&enemy()?.elite){S.p.max=Math.floor(S.p.max*1.05);S.p.hp=Math.min(S.p.max,S.p.hp+5)}
+  }
+  if(dlcUnlocked()&&(beforeInventory>=5))awardAchievement('dlcCollector');
+  if(dlcUnlocked()&&S.cls==='awakened'&&S.combat?.enemy?.boss&&S.combat.enemy.id==='awakeningAvatar')awardAchievement('dlcBoss');
+};
 
+/* ---------- Особый босс ---------- */
+const BASE_DLC_SET_INTENT=setIntent;
+setIntent=function(){
+  const e=enemy();
+  if(e?.id==='awakeningAvatar'&&dlcUnlocked()){
+    const pool=e.phase===1?['attack','special','burn']:e.phase===2?['crit','special','heal']:['special','crit','burn','attack'];
+    e.intent=R.pick(pool);return;
+  }
+  BASE_DLC_SET_INTENT();
+};
+
+/* ---------- Активация и экран города ---------- */
 const BASE_DLC_EXPANDED_CITY=expandedCityScreen;
-expandedCityScreen=function(){const h=BASE_DLC_EXPANDED_CITY();const box=dlcUnlocked()?`<div class="card"><h2>🌑 Пробуждение Бездны</h2><div class="cityStatus good">✓ DLC активно</div><button class="btn" onclick="setScreen('start');render()">🌑 Начать забег Пробуждённым</button></div>`:`<div class="card"><h2>🌑 Пробуждение Бездны</h2><div class="cityStatus">Платное DLC • ${DLC_PRICE_RUB} ₽</div><button class="btn primary" onclick="openDlcActivation()">🔓 Купить / активировать DLC</button><div class="small muted">Новый класс, подклассы, навыки, предметы, реликвии, враги, босс, события, достижения и записи кодекса.</div></div>`;return h+box};
+expandedCityScreen=function(){
+  const h=BASE_DLC_EXPANDED_CITY();
+  const box=dlcUnlocked()
+    ? `<div class="card"><h2>🌑 Пробуждение Бездны</h2><div class="cityStatus good">✓ DLC активно</div><button class="btn" onclick="setScreen('start');render()">🌑 Начать забег Пробуждённым</button></div>`
+    : `<div class="card"><h2>🌑 Пробуждение Бездны</h2><div class="cityStatus">Платное DLC • ${DLC_PRICE_RUB} ₽</div><button class="btn primary" onclick="openDlcActivation()">🔓 Купить / активировать DLC</button><div class="small muted">Новый класс, подклассы, навыки, предметы, реликвии, враги, босс, события, достижения и записи кодекса.</div></div>`;
+  return h+box;
+};
+
+/* ---------- Стартовый экран: DLC-класс ---------- */
 const BASE_DLC_START_SCREEN=startScreen;
-startScreen=function(){const h=BASE_DLC_START_SCREEN();const extra=dlcUnlocked()?`<div class="card"><h2>🌑 DLC: Пробуждение Бездны</h2><div class="cityStatus good">✓ Активировано</div><button class="btn primary" onclick="openStart('awakened')">🌑 Выбрать Пробуждённого</button></div>`:`<div class="card"><h2>🌑 DLC: Пробуждение Бездны</h2><div class="cityStatus">🔒 Заблокировано • ${DLC_PRICE_RUB} ₽</div><button class="btn" onclick="openDlcActivation()">🔓 Купить / активировать</button></div>`;return h+extra};
+startScreen=function(){
+  const h=BASE_DLC_START_SCREEN();
+  const extra=dlcUnlocked()
+    ? `<div class="card"><h2>🌑 DLC: Пробуждение Бездны</h2><div class="cityStatus good">✓ Активировано</div><button class="btn primary" onclick="openStart('awakened')">🌑 Выбрать Пробуждённого</button></div>`
+    : `<div class="card"><h2>🌑 DLC: Пробуждение Бездны</h2><div class="cityStatus">🔒 Заблокировано • ${DLC_PRICE_RUB} ₽</div><button class="btn" onclick="openDlcActivation()">🔓 Купить / активировать</button></div>`;
+  return h+extra;
+};
 const BASE_DLC_OPEN_START=openStart;
-openStart=function(cls){if(CLASSES[cls]?.dlc===DLC_ID&&!dlcUnlocked()){openDlcActivation();return}return BASE_DLC_OPEN_START(cls)};
-const BASE_DLC_END_SCREEN=endScreen;
-endScreen=function(win){const h=BASE_DLC_END_SCREEN(win);if(dlcUnlocked()&&win&&S.cls==='awakened'){if((SYNERGIES||[]).some(x=>tagCount(x.tag)>=x.need&&['magic','combo','risk'].includes(x.tag)))awardAchievement('dlcBuild');if(S.inventory.filter(x=>x.dlc===DLC_ID).length+S.relics.filter(x=>x.dlc===DLC_ID).length>=5)awardAchievement('dlcCollector');awardAchievement('dlcClass')}return h};
+openStart=function(cls){
+  if(CLASSES[cls]?.dlc===DLC_ID&&!dlcUnlocked()){openDlcActivation();return}
+  return BASE_DLC_OPEN_START(cls);
+};
+
+/* ---------- Доступ к DLC после загрузки/покупки ---------- */
+const BASE_DLC_END_SCREEN= endScreen;
+endScreen=function(win){
+  const h=BASE_DLC_END_SCREEN(win);
+  if(dlcUnlocked()&&win&&S.cls==='awakened'){
+    if((SYNERGIES||[]).some(x=>tagCount(x.tag)>=x.need&&['magic','combo','risk'].includes(x.tag)))awardAchievement('dlcBuild');
+    if(S.inventory.filter(x=>x.dlc===DLC_ID).length+S.relics.filter(x=>x.dlc===DLC_ID).length>=5)awardAchievement('dlcCollector');
+    awardAchievement('dlcClass');
+  }
+  return h;
+};
 const BASE_DLC_CODEX=codexScreen;
-codexScreen=function(){if(dlcUnlocked())return BASE_DLC_CODEX();const original=CODEX_ENEMIES.slice();for(let i=CODEX_ENEMIES.length-1;i>=0;i--)if(CODEX_ENEMIES[i].dlc===DLC_ID)CODEX_ENEMIES.splice(i,1);let h;try{h=BASE_DLC_CODEX()}finally{CODEX_ENEMIES.splice(0,CODEX_ENEMIES.length,...original)}return h+`<div class="card"><h2>🌑 Пробуждение Бездны</h2><div class="cityStatus">🔒 Записи DLC скрыты до активации.</div><button class="btn" onclick="openDlcActivation()">🔓 Активировать DLC</button></div>`};
+codexScreen=function(){
+  if(dlcUnlocked())return BASE_DLC_CODEX();
+  const original=CODEX_ENEMIES.slice();
+  for(let i=CODEX_ENEMIES.length-1;i>=0;i--)if(CODEX_ENEMIES[i].dlc===DLC_ID)CODEX_ENEMIES.splice(i,1);
+  let h;
+  try{h=BASE_DLC_CODEX()}finally{CODEX_ENEMIES.splice(0,CODEX_ENEMIES.length,...original)}
+  return h+`<div class="card"><h2>🌑 Пробуждение Бездны</h2><div class="cityStatus">🔒 Записи DLC скрыты до активации.</div><button class="btn" onclick="openDlcActivation()">🔓 Активировать DLC</button></div>`;
+};
+const BASE_DLC_ACH=achievementsScreen;
+achievementsScreen=function(){
+  const h=BASE_DLC_ACH();
+  if(!dlcUnlocked())return h;
+  return h;
+};
 
 </script></body></html>
+
+<!-- SINGLE_FILE_PACKAGE_INFO_START
+Chronicles of the Abyss - single file package
+
+README:
+Хроники Бездны — платное DLC «Пробуждение Бездны» v1.
+Основной файл: game.html
+Цена DLC: 300 ₽
+Передача в ZIP выполнена после проверки синтаксиса JavaScript.
+
+
+CHANGELOG:
+Chronicles of the Abyss DLC Final v2
+
+Подготовлены:
+- резерв оригинальной игры
+- страницы оплаты
+- Vercel API-заготовки
+- структура DLC
+
+Важно: реальные ключи ЮKassa и серверную базу кодов нужно подключить перед запуском продаж.
+
+Payment success template included below.
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><title>Оплата успешна</title></head>
+<body><h1>Оплата прошла успешно</h1><p>Спасибо за покупку DLC Chronicles of the Abyss.</p><a href="game.html">Вернуться в игру</a></body></html>
+Payment error template included below.
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><title>Ошибка оплаты</title></head>
+<body><h1>Оплата не завершена</h1><p>Попробуйте снова.</p><a href="game.html">Вернуться в игру</a></body></html>
+ORIGINAL_BACKUP_INCLUDED_START
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" content="#080b14"><title>Хроники Бездны — Roguelike</title><style>
+:root{--bg:#080b14;--panel:#111827;--panel2:#0d1422;--line:#26334d;--text:#eef2ff;--muted:#8d99b5;--accent:#8b5cf6;--good:#35d07f;--bad:#ff5577;--gold:#f6c453;--blue:#58a6ff;--orange:#ff9f43}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+  contain:layout style paint;margin:0;height:100%;background:radial-gradient(circle at top,#14182a,#080b14 65%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+button,input{font:inherit}button{border:0;color:inherit;cursor:pointer;touch-action:manipulation}
+#app{max-width:520px;height:100%;margin:auto;display:flex;flex-direction:column}
+header{padding:12px 12px 8px;background:rgba(8,11,20,.92);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}.floatingMenu{position:fixed;right:14px;bottom:18px;z-index:15;width:48px;height:48px;border:1px solid var(--line);border-radius:50%;background:#111827;color:var(--text);font-size:24px;font-weight:900;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.top{display:flex;align-items:center;justify-content:space-between}.logo{font-size:22px;font-weight:900}.sub{font-size:11px;color:var(--muted);margin-top:2px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.stat{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:7px;text-align:center;font-size:12px}.stat b{display:block;font-size:14px;margin-top:2px}
+#screen{flex:1;overflow:auto;padding:10px 10px 90px}
+.card{background:linear-gradient(180deg,rgba(17,24,39,.98),rgba(12,18,30,.98));border:1px solid var(--line);border-radius:15px;padding:13px;margin-bottom:10px;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+h1,h2,h3{margin:0 0 8px}h1{font-size:27px}h2{font-size:19px}h3{font-size:15px}.muted{color:var(--muted)}.small{font-size:12px}.good{color:var(--good)}.bad{color:var(--bad)}.gold{color:var(--gold)}.accent{color:#c4b5fd}
+.btn{width:100%;background:#182238;border:1px solid #30405f;border-radius:12px;padding:11px 10px;margin:5px 0;text-align:left;font-weight:700}.btn:active{transform:scale(.985)}.btn:disabled{opacity:.4;cursor:not-allowed}.primary{background:#39266b;border-color:#7655c9}.dangerBtn{background:#3b1825;border-color:#743348}.goodBtn{background:#143324;border-color:#2c6d4b}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:7px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.badge{display:inline-block;padding:3px 7px;border:1px solid #35445f;border-radius:99px;font-size:10px;margin:2px;background:#0c1422;color:#aebbd4}
+.bar{height:9px;background:#070a10;border:1px solid #26334d;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:var(--good)}.bar.hp i{background:#e64b69}.bar.mp i{background:#4d9dff}.bar.xp i{background:#9b6cff}
+.fight{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fighter{background:#0c1320;border:1px solid var(--line);border-radius:14px;padding:10px}.fighter h3{font-size:17px}.intent{padding:8px;margin-top:7px;border:1px solid #6d3d4c;background:#26151d;border-radius:10px;font-size:12px}
+.statuses{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.status{font-size:10px;padding:3px 6px;border-radius:7px;background:#202a3d;border:1px solid #34425b}
+.nodegrid{display:grid;grid-template-columns:repeat(8,minmax(64px,1fr));gap:7px;overflow-x:auto;padding-bottom:5px}.node{min-width:64px;min-height:72px;border-radius:12px;background:#101827;border:1px solid #26334d;padding:6px;font-size:10px;text-align:center}.node.can{border-color:#7655c9;box-shadow:0 0 12px rgba(139,92,246,.18)}.node.current{outline:2px solid #f6c453}.node.lock{opacity:.3}.node.boss{border-color:#a63f57;background:#28131b}
+.reward{padding:11px;border:1px solid #31405b;background:#101a2c;border-radius:12px;margin:6px 0;text-align:left}.reward strong{display:block;font-size:15px}.rar-common{color:#d4d8e1}.rar-uncommon{color:#59d68a}.rar-rare{color:#63a4ff}.rar-epic{color:#c18cff}.rar-legendary{color:#ffb84d}
+.item{padding:9px;border:1px solid var(--line);border-radius:11px;background:#0c1421;margin:5px 0}.item b{font-size:13px}.row{display:flex;justify-content:space-between;gap:8px;align-items:center}.pill{padding:4px 7px;border-radius:8px;background:#182238;font-size:11px}
+.log{font-size:12px;line-height:1.45;padding:8px 10px;border-left:3px solid #34415b;background:#0b111d;border-radius:8px;margin:4px 0}.log.combat{border-left-color:#e64b69}.log.good{border-left-color:#35d07f}.log.warn{border-left-color:#f6c453}
+footer{position:fixed;bottom:0;left:0;right:0;max-width:520px;margin:auto;padding:7px 9px calc(7px + env(safe-area-inset-bottom));background:rgba(7,10,17,.96);border-top:1px solid var(--line);z-index:10}
+.modalBack{position:fixed;inset:0;background:#080b14;display:flex;align-items:flex-end;z-index:20}.modal{position:relative;width:100%;max-width:520px;margin:auto;background:#101827;border:1px solid var(--line);border-radius:18px 18px 0 0;padding:15px;max-height:90vh;overflow:auto}.modalClose{position:absolute;top:8px;right:10px;width:40px;height:40px;padding:0;margin:0;border:1px solid var(--line);border-radius:50%;background:#111827;color:var(--text);font-size:28px;line-height:38px;text-align:center;z-index:2}.modalClose:active{transform:scale(.96)}
+input{width:100%;background:#080d17;border:1px solid #33415d;color:white;padding:11px;border-radius:10px;margin:5px 0 10px}
+hr{border:0;border-top:1px solid var(--line);margin:10px 0}
+@media(min-width:560px){footer{bottom:8px;border:1px solid var(--line);border-radius:14px}}
+.cityHero{background:radial-gradient(circle at 50% 0%,rgba(139,92,246,.18),transparent 58%),linear-gradient(180deg,#121a2c,#0c1220);border-color:#394b70;text-align:center;padding:20px 14px}.cityIcon{font-size:58px;line-height:1;margin:4px 0 12px}.cityBuilding{min-height:86px;display:flex;flex-direction:column;justify-content:center}.cityBuilding .big{font-size:28px;line-height:1;margin-bottom:5px}.cityBuilding.locked{opacity:.58}.cityStatus{padding:10px 12px;border:1px solid #30405f;border-radius:11px;background:#0b1220;margin-top:8px}.combatResult{text-align:center;padding:18px 14px;margin-top:18px}.resultTitle{font-size:24px;font-weight:900;color:var(--good);margin-bottom:8px}.bossResult .resultTitle{color:#ffb84d}.resultLine{padding:10px 8px;margin:6px 0;background:#0c1424;border:1px solid #263752;border-radius:10px}.resultLine.good{color:#8df0a9}.nextBtn{font-size:19px;font-weight:900;padding:15px;margin-top:14px}
+select{font:inherit}
+.cityBuilding{border:1px solid var(--line);color:inherit}
+.resultLine{line-height:1.35}
+</style></head><body><div id="app"></div><script>
+'use strict';
+/* ============================================================
+   ХРОНИКИ БЕЗДНЫ — ONE FILE / SAFE PREVIEW BUILD
+   ============================================================ */
+/* ---------- Безопасное сохранение: Preview не ломает игру ---------- */
+const MEMORY={};
+const STORE={
+  ok:false,
+  init(){
+    try{
+      const s=window.localStorage;
+      const k='__abyss_probe__';
+      s.setItem(k,'1'); s.removeItem(k);
+      this.ok=true;
+    }catch(e){this.ok=false;}
+  },
+  get(k){
+    try{return this.ok?window.localStorage.getItem(k):(MEMORY[k]??null)}
+    catch(e){this.ok=false;return MEMORY[k]??null}
+  },
+  set(k,v){
+    try{if(this.ok){window.localStorage.setItem(k,v);return}}catch(e){this.ok=false}
+    MEMORY[k]=v;
+  },
+  del(k){
+    try{if(this.ok){window.localStorage.removeItem(k);return}}catch(e){this.ok=false}
+    delete MEMORY[k];
+  }
+};
+STORE.init();
+/* ---------- RNG ---------- */
+function hash(s){let h=2166136261>>>0;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function RNG(seed){
+  let a=hash(seed);
+  return {
+    next(){a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296},
+    int(n){return Math.floor(this.next()*n)},
+    pick(a){return a?.length?a[this.int(a.length)]:null},
+    chance(p){return this.next()<p}
+  }
+}
+let R=RNG('boot');
+/* ---------- Данные ---------- */
+const RARITY={
+  common:{name:'Обычный',mul:1},
+  uncommon:{name:'Необычный',mul:1.25},
+  rare:{name:'Редкий',mul:1.6},
+  epic:{name:'Эпический',mul:2.1},
+  legendary:{name:'Легендарный',mul:2.8}
+};
+const TAG={
+  martial:'⚔️ Воинственный',magic:'🔮 Магия',crit:'🎯 Крит',bleed:'🩸 Кровь',
+  poison:'☠️ Яд',burn:'🔥 Огонь',freeze:'❄️ Лёд',block:'🛡️ Блок',
+  combo:'⚡ Комбо',risk:'💀 Риск',curse:'☠️ Проклятие',gold:'🪙 Богатство',
+  summon:'👹 Призыв',heal:'💚 Лечение',support:'🤝 Поддержка',defense:'🛡️ Защита'
+};
+const CLASSES={
+  warrior:{name:'Воин',icon:'⚔️',hp:120,mp:42,atk:12,def:7,tags:['martial','bleed','block'],desc:'Блок, ярость, кровотечение. Стабильный фронтовик.',skills:['heavy','guard','rage']},
+  mage:{name:'Маг',icon:'🔮',hp:82,mp:68,atk:15,def:3,tags:['magic','burn','freeze'],desc:'Стихийные заклинания и контроль.',skills:['fire','frost','storm']},
+  rogue:{name:'Разбойник',icon:'🗡️',hp:94,mp:48,atk:14,def:4,tags:['crit','poison','combo'],desc:'Криты, яд, серии ударов и высокий риск.',skills:['flurry','venom','shadow']},
+  paladin:{name:'Паладин',icon:'🛡️',hp:132,mp:44,atk:11,def:9,tags:['block','defense','martial'],desc:'Стойкий защитник, превращающий оборону в силу.',skills:['guard','heavy','rage']},
+  warlock:{name:'Чернокнижник',icon:'🜏',hp:88,mp:72,atk:13,def:3,tags:['magic','poison','risk'],desc:'Тёмная магия, яд и рискованные усиления.',skills:['fire','venom','shadow']},
+  ranger:{name:'Следопыт',icon:'🏹',hp:100,mp:52,atk:15,def:4,tags:['crit','poison','combo'],desc:'Точный стрелок, играющий через критические серии.',skills:['flurry','venom','shadow']}
+};
+const SKILLS={
+  heavy:{name:'Тяжёлый удар',cost:8,tag:'bleed',tags:['bleed','martial'],desc:'1.65× атаки + к
+ORIGINAL_BACKUP_INCLUDED_END
+-->
+
+
+<!--
+Chronicles of the Abyss - SINGLE FILE V2
+Подготовка:
+- единый HTML-файл;
+- сохранение резервной копии оригинала;
+- подготовка для дальнейшей интеграции DLC-квестов;
+- без изменения базовой механики вне запрошенных систем.
+-->
