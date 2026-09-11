@@ -22,11 +22,12 @@ jobs:
 
       - name: Find Gradle wrapper
         run: |
-          find . -name gradlew
+          echo "Searching gradlew..."
+          find . -name gradlew -type f
 
       - name: Build debug APK
         run: |
-          GRADLEW=$(find . -name gradlew | head -1)
+          GRADLEW=$(find . -name gradlew -type f | head -1)
 
           if [ -z "$GRADLEW" ]; then
             echo "Gradle wrapper not found"
@@ -34,7 +35,7 @@ jobs:
           fi
 
           chmod +x "$GRADLEW"
-          cd $(dirname "$GRADLEW")
+          cd "$(dirname "$GRADLEW")"
           ./gradlew assembleDebug
 
       - name: Upload APK
