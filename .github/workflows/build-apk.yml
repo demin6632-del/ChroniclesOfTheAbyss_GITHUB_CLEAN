@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -19,17 +20,19 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Extract Android project
-        run: |
-          unzip -o ChroniclesOfTheAbyss_ANDROID_READY.zip -d android_project
-
       - name: Find Gradle wrapper
         run: |
-          find android_project -name gradlew
+          find . -name gradlew
 
       - name: Build debug APK
         run: |
-          GRADLEW=$(find android_project -name gradlew | head -1)
+          GRADLEW=$(find . -name gradlew | head -1)
+
+          if [ -z "$GRADLEW" ]; then
+            echo "Gradle wrapper not found"
+            exit 1
+          fi
+
           chmod +x "$GRADLEW"
           cd $(dirname "$GRADLEW")
           ./gradlew assembleDebug
