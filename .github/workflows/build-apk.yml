@@ -18,11 +18,20 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Find Gradle wrapper
+        run: |
+          echo "Searching gradlew..."
+          find . -name gradlew
+
       - name: Make gradlew executable
-        run: chmod +x gradlew || true
+        run: |
+          chmod +x $(find . -name gradlew | head -1)
 
       - name: Build debug APK
-        run: ./gradlew assembleDebug
+        run: |
+          GRADLEW=$(find . -name gradlew | head -1)
+          cd $(dirname $GRADLEW)
+          ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
